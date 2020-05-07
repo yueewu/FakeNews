@@ -1,0 +1,21 @@
+---
+title: "Fake_News"
+author: "Dada's Lambda"
+date: "5/6/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+grabRemote <- function(url) {
+    temp <- tempfile()
+    download.file(url, temp)
+    aap.file <- read.csv(gzfile(temp), as.is = TRUE)
+    unlink(temp)
+    return(aap.file)
+}
+```
+
