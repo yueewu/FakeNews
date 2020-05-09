@@ -36,4 +36,9 @@ ESOC Data
 ```{r}
 esoc_data <- gsheet2tbl("https://drive.google.com/file/d/1QJw3MieuT_T529RaACPhg3WgEQBmJ4jK/view")
 ```
-
+Article Data
+```{r}
+article_data <- fread("covid19_articles.csv", header = TRUE)
+article_data <- rbind(article_data, fread("covid19_articles_20200504.csv", header = TRUE))
+article_data <- article_data %>% select(-V1)
+```
