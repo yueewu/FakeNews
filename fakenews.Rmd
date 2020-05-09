@@ -9,6 +9,14 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+```{r}
+library(stringr)
+library(tidyverse)
+library(gsheet)
+```
+
+Gedelt Data
 ```{r}
 grabRemote <- function(url) {
     temp <- tempfile()
@@ -17,5 +25,15 @@ grabRemote <- function(url) {
     unlink(temp)
     return(aap.file)
 }
+
+gdelt_path <- read.table("http://data.gdeltproject.org/blog/2020-coronavirus-narrative/live_onlinenews/MASTERFILELIST.TXT")
+gdelt_path <- vapply(gdelt_path, as.character, character(nrow(gdelt_path)))
+gdelt_path <- as.matrix(gdelt_path[str_detect(gdelt_path, "falsehood")])
+gdelt_data <- apply(gdelt_path, 1, grabRemote)
+```
+
+ESOC Data
+```{r}
+esoc_data <- gsheet2tbl("https://drive.google.com/file/d/1QJw3MieuT_T529RaACPhg3WgEQBmJ4jK/view")
 ```
 
