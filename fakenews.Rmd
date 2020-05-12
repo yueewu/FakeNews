@@ -18,7 +18,7 @@ library(gsheet)
 
 
 ```{r}
-cases <- read.csv("us_covid19_daily.csv")
+cases <- read.csv("https://covidtracking.com/api/v1/us/daily.csv")
 ```
 
 Gedelt Data
