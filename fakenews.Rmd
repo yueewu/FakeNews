@@ -16,6 +16,11 @@ library(tidyverse)
 library(gsheet)
 ```
 
+
+```{r}
+cases <- read.csv("us_covid19_daily.csv")
+```
+
 Gedelt Data
 ```{r}
 grabRemote <- function(url) {
@@ -30,10 +35,40 @@ gdelt_path <- read.table("http://data.gdeltproject.org/blog/2020-coronavirus-nar
 gdelt_path <- vapply(gdelt_path, as.character, character(nrow(gdelt_path)))
 gdelt_path <- as.matrix(gdelt_path[str_detect(gdelt_path, "falsehood")])
 gdelt_data <- apply(gdelt_path, 1, grabRemote)
+
+
+date <- as.Date(substr(gdelt_data[[1]][[1]], 1, 10), "%Y-%m-%d")
+for(i in 2:44){
+    date <- c(date, as.Date(substr(gdelt_data[[i]][[1]], 1, 10), "%Y-%m-%d"))
+}
+
+x <- sort(unique(c(date, as.Date(as.character(cases$date), "%Y%m%d"))))
+date_table <- table(date)
+news <- ifelse(x %in% as.Date(names(date_table)), date_table[as.character(x)], NA)
+news <- news/max(news, na.rm = TRUE)
+cases[[1]] <- as.Date(as.character(cases$date), "%Y%m%d")
+positive <- cases$positive
+names(positive) <- cases$date
+case <- ifelse(x %in% cases$date, positive[as.character(x)], NA)
+case <- case/max(case, na.rm = TRUE)
+plot(x, news, type = "l")
+lines(x, case, col = "red")
 ```
+
+put 14 days forward for the cases:
+
+```{r}
+case <- c(case[15:124], rep(NA, 14))
+plot(x, news, type = "l")
+lines(x, case, col = "red")
+```
+
 
 ESOC Data
 ```{r}
 esoc_data <- gsheet2tbl("https://drive.google.com/file/d/1QJw3MieuT_T529RaACPhg3WgEQBmJ4jK/view")
+esoc_data <- esoc_data[!is.na(esoc_data$Publication_Date),]
+date <- as.Date(esoc_data$Publication_Date, "%d-%b-%y")
+plot(table(date), type = "l")
 ```
 
